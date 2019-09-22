@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "nu/plugin"
+
+class LenCommand < Nu::Plugin::Command
+  name "len-ruby"
+
+  def filter input
+    input.size
+  end
+end
+
+Nu::Plugin::JsonEntryPoint.run cmd: LenCommand
