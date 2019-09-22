@@ -2,6 +2,10 @@ module Nu
   module Plugin
     class Command
       class << self
+        def silent(action)
+          @silent = action
+        end
+
         def before_action(action)
           @before = action
         end

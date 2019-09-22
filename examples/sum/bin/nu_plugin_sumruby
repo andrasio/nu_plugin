@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "nu/plugin"
+
+class SumCommand < Nu::Plugin::Command
+  name "sum-ruby"
+
+  # We want to accumulate and not report back to Nu any output while filtering, so
+  # we mark the method silent and send nothing back to Nu when filtering happens.
+  silent :filter
+
+  # We want to send back the total sum after the filter finishes.
+  after_action :report
+
+  def initialize
+    @total = 0
+  end
+
+  def filter input
+    @total += input
+  end
+
+  def report
+    @total
+  end
+end
+
+Nu::Plugin::JsonEntryPoint.run cmd: SumCommand

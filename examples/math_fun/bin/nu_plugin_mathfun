@@ -6,7 +6,8 @@ require "nu/plugin"
 class MathFunCommand < Nu::Plugin::Command
   name "math-fun"
 
-  after_action :build_table
+  # We want to send back a math exercise after the filter finishes.
+  after_action :math_table
 
   MAX = 20
 
@@ -14,14 +15,22 @@ class MathFunCommand < Nu::Plugin::Command
     @table = []
   end
 
-  def filter _
+  # Since this method exists (and required so nu-plugin registers it as a filter)
+  # nu-plugin assumes it's a filter command.
+  #
+  # We don't need it for this example so we are leaving it empty.
+  #
+  # nu-plugin will send back nothing to Nu while filtering takes place if and only if
+  # this method does not return anything (including implicit returns from assignments
+  # or expressions)
+  def filter input
   end
 
   def f(x, &formula)
     {x: x, y: formula.call(x)}
   end
 
-  def build_table
+  def math_table
     1.upto(MAX) do |x|
       @table << f(x) {|x| x*2}
     end

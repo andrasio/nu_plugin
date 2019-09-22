@@ -49,9 +49,18 @@ module Nu
       end
 
       def start_filter input
+        klass = @binary.class
         input = @packer.rubytize(input)
         output = @binary.filter(input)
-        @output = output ? [output] : []
+
+        @output = begin
+          if :filter == klass.instance_variable_get("@silent")
+            []
+          else
+            output ? [output] : []
+          end
+        end
+
         format_stream!
         @view.filter_done
       end
