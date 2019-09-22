@@ -1,4 +1,4 @@
-require "nu/plugin"
+require "nu/plugin/packing"
 
 describe Nu::Plugin::Packing do
 

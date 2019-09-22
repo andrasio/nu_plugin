@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "nu/plugin"
+
+class MathFunCommand < Nu::Plugin::Command
+  name "math-fun"
+
+  after_action :build_table
+
+  MAX = 20
+
+  def initialize
+    @table = []
+  end
+
+  def filter _
+  end
+
+  def f(x, &formula)
+    {x: x, y: formula.call(x)}
+  end
+
+  def build_table
+    1.upto(MAX) do |x|
+      @table << f(x) {|x| x*2}
+    end
+
+    @table
+  end
+end
+
+Nu::Plugin::JsonEntryPoint.run cmd: MathFunCommand

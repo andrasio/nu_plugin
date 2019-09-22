@@ -1,4 +1,4 @@
-require "nu/plugin"
+require "nu/plugin/command"
 
 describe Nu::Plugin::Command do
   context "configuration" do

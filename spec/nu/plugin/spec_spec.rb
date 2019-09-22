@@ -1,4 +1,4 @@
-require "nu/plugin"
+require "nu/plugin/spec"
 
 RSpec.configure do |c|
   c.include RequestHelpers

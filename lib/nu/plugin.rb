@@ -1,5 +1,4 @@
-require "nu/plugin/version"
-require "nu/plugin/data"
+require "nu/plugin/packing"
 require "nu/plugin/command"
 require "nu/plugin/spec"
 

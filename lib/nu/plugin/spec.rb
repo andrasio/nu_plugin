@@ -34,7 +34,8 @@ module Nu
       def begin_filter
         klass = @binary.class
         before_method = klass.instance_variable_get("@before")
-        @output = (before_method ? [@binary.send(before_method)] : [])
+        @binary.send(before_method) if before_method
+        @output = []
         format_stream!
         @view.before_filter_ready
       end
@@ -57,10 +58,6 @@ module Nu
 
       def Ok &block
         {Ok: block.call}
-      end
-
-      def Err &block
-        {ShellError: block.call}
       end
 
       def filter
