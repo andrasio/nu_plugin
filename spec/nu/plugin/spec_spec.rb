@@ -36,6 +36,11 @@ describe Nu::Plugin::Spec do
     plugin.end_filter
   end
 
+  it "prepares sink" do
+    expect(view).to receive(:sink_ready)
+    plugin.sink
+  end
+
   it "quits the plugin" do
     expect(view).to receive(:quit_ready)
     plugin.quit

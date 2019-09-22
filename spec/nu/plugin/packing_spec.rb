@@ -1,76 +1,171 @@
 require "nu/plugin"
 
 describe Nu::Plugin::Packing do
-  let (:tagged_value) {
+
+  let (:nu_tag) {
     {
       "tag" => {
           "origin" => "00000000-0000-0000-0000-000000000000",
           "span" => {
           	"start" => 0,
-          	"end" => 4
+          	"end" => 3
           }
        }
     }
   }
 
-  let (:int_value) {
-    {"Primitive" => {"Int" => 2509000000}}
+  def nu_value(value) 
+    {"item" => value}
+  end
+
+  def nu_tagged_value(value)
+    nu_tag.merge(nu_value(value))
+  end
+
+  def nu_int(integer) 
+    Hash[ "Primitive", {"Int" => integer} ]
+  end
+
+  let (:nu_nothing) {
+    {"Primitive" => "Nothing"}
   }
 
-  let (:string_value) {
-    {"Primitive" => {"String" => "andres"}}
+  let (:nu_true) {
+    Hash[ "Primitive", {"Boolean" => "true"} ]
   }
 
-  context "item unpacking" do
-    it "unpacks a table" do
-      value = tagged_value.merge({
-        "Row" => {
-          "entries" => {"name"  => tagged_value.merge("item" => string_value),
-                        "tarif" => tagged_value.merge("item" => int_value) }
-          }
-      })
+  let (:nu_false) {
+    Hash[ "Primitive", {"Boolean" => "false"} ]
+  }
 
-      data = Nu::Plugin::Packing.new
-      expect(data.rubytize(value)[:name]).to eql("andres")
-      expect(data.rubytize(value)[:tarif]).to eql(2509000000)
+  let (:nu_string) {
+    Hash[ "Primitive", {"String" => "andres"} ]
+  }
+
+  let (:nu_row) {
+    {
+      "Row" => {
+        "entries" => {
+          "name"  => nu_value(nu_string),
+          "tarif" => nu_value(nu_int(35))
+        }
+      }
+    }
+  }
+
+  let (:nu_tagged_row) {
+    {
+      "Row" => {
+        "entries" => {
+          "name"  => nu_tagged_value(nu_string),
+          "tarif" => nu_tagged_value(nu_int(35))
+        }
+      }
+    }
+  }
+
+  let (:nu_table) { 
+    Hash[ "Table", [nu_value(nu_row)] ]
+  }
+
+  let (:nu_tagged_table) {
+    Hash[ "Table", [nu_tagged_value(nu_tagged_row)] ]
+  }
+
+  context "unpacking" do
+    let (:packer) { Nu::Plugin::Packing.new }
+
+    it "nothing" do
+      value = nu_value(nu_nothing)
+      expect(packer.rubytize(value)).to be_nil
     end
 
-    it "unpacks an integer" do
-      value = tagged_value.merge "item" => int_value
-      data = Nu::Plugin::Packing.new
-      expect(data.rubytize(value)).to eql(2509000000)
+    it "integers" do
+      value = nu_value(nu_int(35))
+      expect(packer.rubytize(value)).to eql(35)
     end
 
-    it "unpacks a string" do
-      value = tagged_value.merge "item" => string_value
-      data = Nu::Plugin::Packing.new
-      expect(data.rubytize(value)).to eql("andres")
+    it "strings" do
+      value = nu_value(nu_string)
+      expect(packer.rubytize(value)).to eql("andres")
+    end
+
+    it "tables" do
+      value = nu_value(nu_table)
+      expect(packer.rubytize(value)).to include({name: "andres", tarif: 35})
+    end
+
+    it "rows" do
+      value = nu_value(nu_row)
+      expect(packer.rubytize(value)[:name]).to eql("andres")
+      expect(packer.rubytize(value)[:tarif]).to eql(35)
     end
   end
 
-  context "packing an item" do
-    it "packs an integer" do
-      value = 35
-      data = Nu::Plugin::Packing.new
-      expected = data.tag.merge({"item" => {"Primitive" => {"Int" => 35}}})
-      expect(data.nuvalize(value)).to eql(expected)
+  context "packing" do
+    using Nu::Plugin::Data
+
+    it "nil objects" do
+      expect(nil.nuvalize).to eql(nu_nothing)
+      expect([].nuvalize).to eql(nu_nothing)
     end
 
-    it "packs a string" do
-      value = "andres"
-      data = Nu::Plugin::Packing.new
-      expected = data.tag.merge({"item" => {"Primitive" => {"String" => "andres"}}})
-      expect(data.nuvalize(value)).to eql(expected)
+    it "booleans" do
+      expect(true.nuvalize).to eql(nu_true)
+      expect(false.nuvalize).to eql(nu_false)
     end
 
-    it "packs a table" do
-      expected = tagged_value.merge({"item" => {
-            "Row" => {"entries" => {"name"  => tagged_value.merge("item" => string_value),
-                        "tarif" => tagged_value.merge("item" => int_value)}}
-            }})
+    it "integers" do
+      expect(35.nuvalize).to eql(nu_int(35))
+      expect(-1.nuvalize).to eql(nu_int(-1))
+    end
 
-      data = Nu::Plugin::Packing.tagged(tagged_value)
-      expect(data.nuvalize({name: "andres", tarif: 2509000000})).to eql(expected)
+    it "strings" do
+      expect("andres".nuvalize).to eql(nu_string)
+    end
+
+    it "arrays" do
+      data = [{name: "andres", tarif: 35}]
+      data.instance_variable_set("@meta", Nu::Plugin::Packing.tagged(nu_tag))
+      expect(data.nuvalize).to eql(nu_tagged_table)
+    end
+
+    it "hashes" do
+      data = {name: "andres", tarif: 35}
+      data.instance_variable_set("@meta", Nu::Plugin::Packing.tagged(nu_tag))
+      expect(data.nuvalize).to eql(nu_tagged_row)
+    end
+  end
+
+  context "packing with metadata" do
+    let (:with_metadata) { Nu::Plugin::Packing.tagged(nu_tag) }
+
+    it "nil objects" do
+      expect(with_metadata.nuvalize(nil)).to eql(nu_tagged_value(nu_nothing))
+    end
+
+    it "boolean objects" do
+      expect(with_metadata.nuvalize(true)).to eql(nu_tagged_value(nu_true))
+      expect(with_metadata.nuvalize(false)).to eql(nu_tagged_value(nu_false))
+    end
+
+    it "integers" do
+      expect(with_metadata.nuvalize(35)).to eql(nu_tagged_value(nu_int(35)))
+    end
+
+    it "strings" do
+      expected = nu_tagged_value(nu_string)
+      expect(with_metadata.nuvalize("andres")).to eql(expected)
+    end
+
+    it "tables" do
+      expected = nu_tagged_value(nu_tagged_table)
+      expect(with_metadata.nuvalize([{name: "andres", tarif: 35}])).to eql(expected)
+    end
+
+    it "rows" do
+      expected = nu_tagged_value(nu_tagged_row)
+      expect(with_metadata.nuvalize({name: "andres", tarif: 35})).to eql(expected)
     end
   end
 end

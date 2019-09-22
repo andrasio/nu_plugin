@@ -20,23 +20,19 @@ module Nu
       end
 
       def configuration
-        config = {
+        {
           name: self.class.instance_variable_get("@name"),
           named: self.class.instance_variable_get("@flags") || {},
           usage: "hola usage",
-          positional: []
+          positional: [],
+          rest_positional: nil,
+          is_filter: is_filter?
         }
-
-        command_type = type
-
-        config.merge! Hash[command_type.to_sym, true] if command_type
-        config
       end
 
       private
-      def type
-        return "is_filter" if public_methods(false).include? :filter
-        return "is_sink" if public_methods(false).include? :sink
+      def is_filter?
+        public_methods(false).include? :filter
       end
     end
   end

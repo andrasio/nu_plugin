@@ -1,41 +1,61 @@
 module Nu
   module Plugin
     module Data
+      refine NilClass do
+        def nuvalize
+          Hash[ "Primitive", "Nothing" ]
+        end
+      end
+      
+      refine TrueClass do
+        def nuvalize
+          Hash[ "Primitive", {"Boolean" => "true"} ]
+        end
+      end
+
+      refine FalseClass do
+        def nuvalize
+          Hash[ "Primitive", {"Boolean" => "false"} ]
+        end
+      end
+
       refine String do
         def nuvalize
-      	  {"Primitive" => {"String" => self}}
+      	  Hash[ "Primitive", {"String" => self} ]
         end
       end
 
       refine Integer do
         def nuvalize
-      	  {"Primitive" => {"Int" => self}}
+      	  Hash[ "Primitive", {"Int" => self} ]
         end
       end
 
       refine Hash do
+        def meta
+          @meta ||= Packing.tagged(tag)
+        end
+
         def nuvalize
           fields = map do |k,v| 
-            [k.to_s, Packing.tagged(tag).nuvalize(v)]
+            [k.to_s, meta.nuvalize(v)]
           end
 
-          {"Row" => {"entries" => Hash[fields]}}
+          Hash[ "Row", {"entries" => Hash[fields]} ]
         end
       end
 
       refine Array do
+        def meta
+          @meta ||= Packing.tagged(tag)
+        end
+
         def nuvalize
           return {"Primitive" => "Nothing"} if empty?
 
-          rows = map {|row| Packing.tagged(tag).nuvalize(row)}
+          rows = map {|row| meta.nuvalize(row)}
 
-          {"Table" => rows}
-        end
-      end
-
-      refine NilClass do
-        def nuvalize
-          {"Primitive" => "Nothing"}
+          Hash[ "Table", rows ]
         end
       end
     end
@@ -45,21 +65,36 @@ module Nu
 
       attr_accessor :tag
 
-      def item(value)
-      	keys = value.keys
+      def nu_item(nu_value)
+      	keys = nu_value.keys
 
       	case
       	  when keys.include?("Row")
-      	    row(value.fetch("Row"))
-      	  else
-      	    value.fetch("Primitive").values.first
+      	    nu_row(nu_value.fetch("Row"))
+          when keys.include?("Table")
+            nu_table(nu_value.fetch("Table"))
+          else
+      	    begin
+              nu_primitive = nu_value.fetch("Primitive")
+
+              return nil if nu_primitive == "Nothing"
+              nu_primitive.values.first
+            end
       	end
       end
 
-      def row(value)
+      def nu_row(nu_value)
       	{}.tap do |dictionary|
-          value.fetch("entries").each_pair do |k,v|
-            dictionary[k.to_sym] = rubytize(v)
+          nu_value.fetch("entries").each_pair do |name,nu_tagged_value|
+            dictionary[name.to_sym] = nu_item(nu_tagged_value.fetch("item"))
+          end
+        end
+      end
+
+      def nu_table(nu_values)
+        [].tap do |rows|
+          nu_values.each do |nu_tagged_value|
+            rows << nu_item(nu_tagged_value.fetch("item"))
           end
         end
       end
@@ -67,7 +102,7 @@ module Nu
       def default_tag
       	{
       	  "origin"=>"00000000-0000-0000-0000-000000000000", 
-      	  "span"=>{"start"=>5, "end"=>26}
+      	  "span"=>{"start"=>0, "end"=>0}
         }
       end
 
@@ -75,30 +110,20 @@ module Nu
         @tag ||= {"tag" => default_tag}
       end
 
-      def rubytize(tagged_value)
-      	@tag = {
-      		"tag" => tagged_value.fetch("tag") { default_tag }
-        }
-      	keys = tagged_value.keys
-
-      	case
-      	  when keys.include?("item")
-            item(tagged_value.fetch("item"))
-      	  when keys.include?("Row")
-      	    row(tagged_value.fetch("Row"))
-      	end
+      def rubytize(nu_tagged_value)
+      	nu_item(nu_tagged_value.fetch("item"))
       end
 
-      def nuvalize(value)
+      def nuvalize(ruby_object)
         meta = tag
 
-        value.class.instance_eval do
+        ruby_object.class.instance_eval do
           define_method :tag do
             meta
           end
         end
 
-      	{"item" => value.nuvalize}.merge(tag)
+      	{"item" => ruby_object.nuvalize}.merge(tag)
       end
 
       class << self

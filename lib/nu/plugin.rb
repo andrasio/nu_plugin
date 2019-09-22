@@ -25,7 +25,7 @@ module Nu
       end 
 
       def io
-        @io ||= [STDIN, STDOUT]
+        @io ||= [ARGF, STDOUT]
       end
 
       def read
@@ -65,19 +65,25 @@ module Nu
         plugin.start_filter(@input["params"])
       end
 
+      def sink_ready
+        val = @input["params"][1]
+        plugin.start_sink(val)
+      end
+
       def filter_done
-        r = {Ok: [{ Ok: {Value: @plugin.data} }]}
-        respond(r)
+        respond(@plugin.data)
+      end
+
+      def sink_done
+        @done = true
       end
 
       def before_filter_ready
-        r = {Ok: @plugin.data}
-        respond(r)
+        respond(@plugin.data)
       end
 
       def end_filter_ready
-        r = {Ok: [{ Ok: {Value: @plugin.data} }]}
-        respond(r)
+        respond(@plugin.data)
       end
 
       def quit_ready

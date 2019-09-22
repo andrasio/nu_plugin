@@ -62,7 +62,7 @@ describe Nu::Plugin::Command do
           end
         end
 
-        expect(SinkTypeTest.new.configuration[:is_sink]).to be(true)
+        expect(SinkTypeTest.new.configuration[:is_filter]).to be(false)
       end
     end
   end
