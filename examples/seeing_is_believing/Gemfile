@@ -1,0 +1,4 @@
+source "https://rubygems.org"
+
+gem "nu-plugin", path: "../../../nu-plugin"
+gem "seeing_is_believing"

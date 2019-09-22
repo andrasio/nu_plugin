@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "seeing_is_believing"
+require "nu/plugin"
+
+class SeeingIsBelievingCommand < Nu::Plugin::Command
+  name "sib"
+
+  def initialize
+    @evaluated = ""
+  end
+
+  def sink inputs
+    return "" if inputs.empty?
+
+    @evaluated << "Evaluated Ruby Code:\n"
+
+    ruby_code = inputs.join
+    ruby_code_lines = ruby_code.lines
+    longest_line = max_len(ruby_code_lines)
+
+    evaluate(ruby_code).each_with_index do |evaluated_code, line_number|
+      @evaluated << "%#{-1*longest_line}s \#%s\n" % [ruby_code_lines[line_number].chomp, evaluated_code[0]]
+    end
+
+    print "%s" % @evaluated
+  end
+
+  private
+  def max_len(ruby_code_line)
+    ruby_code_line.reduce(0) do |max, line|
+      size = line.size
+      size > max ? size : max
+    end
+  end
+
+  def evaluate(ruby_code)
+    SeeingIsBelieving.call(ruby_code).result
+  end
+end
+
+Nu::Plugin::JsonEntryPoint.run cmd: SeeingIsBelievingCommand
