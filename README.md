@@ -1,32 +1,18 @@
-# Nu::Plugin
+# nu-plugin
 
-Gema para crear complementos (plugins) de Nu.
+Write [Nushell](http://nushell.sh) plugins in the most fun way possible.
 
-## Installation
+## Status
 
-Add this line to your application's Gemfile:
+As [Nushell](https://github.com/nushell/nushell) matures and improves stability so will nu-plugin, it may be unstable for certain cases but works enough to play along with Nu.
 
-```ruby
-gem 'nu-plugin'
-```
+## Try the examples
 
-And then execute:
+Please read the [examples instructions](https://github.com/andrasio/nu-plugin/tree/master/examples) to get started.
 
-    $ bundle
+## Write your plugin
 
-Or install it yourself as:
-
-    $ gem install nu-plugin
-
-## Usage
-
-Por completar
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+TODO
 
 ## Contributing
 

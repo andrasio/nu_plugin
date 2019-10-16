@@ -5,6 +5,7 @@ require "nu/plugin"
 
 class MathFunCommand < Nu::Plugin::Command
   name "math-fun"
+  usage "Shows a table of values for f(x) = x + 2"
 
   # We want to send back a math exercise after the filter finishes.
   after_action :math_table

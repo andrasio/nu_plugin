@@ -5,7 +5,7 @@ describe Nu::Plugin::Packing do
   let (:nu_tag) {
     {
       "tag" => {
-          "origin" => "00000000-0000-0000-0000-000000000000",
+          "anchor" => "00000000-0000-0000-0000-000000000000",
           "span" => {
           	"start" => 0,
           	"end" => 3

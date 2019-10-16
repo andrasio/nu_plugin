@@ -6,6 +6,7 @@ require "nu/plugin"
 
 class SeeingIsBelievingCommand < Nu::Plugin::Command
   name "sib"
+  usage "Shows Ruby code snippets with evaluated Ruby code per line in comments"
 
   def initialize
     @evaluated = ""
@@ -14,7 +15,7 @@ class SeeingIsBelievingCommand < Nu::Plugin::Command
   def sink inputs
     return "" if inputs.empty?
 
-    @evaluated << "Evaluated Ruby Code:\n"
+    @evaluated << "# Evaluated Ruby Code:\n"
 
     ruby_code = inputs.join
     ruby_code_lines = ruby_code.lines

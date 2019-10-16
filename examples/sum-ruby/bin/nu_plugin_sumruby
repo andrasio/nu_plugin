@@ -5,6 +5,7 @@ require "nu/plugin"
 
 class SumCommand < Nu::Plugin::Command
   name "sum-ruby"
+  usage "Sums a column of values"
 
   # We want to accumulate and not report back to Nu any output while filtering, so
   # we mark the method silent and send nothing back to Nu when filtering happens.

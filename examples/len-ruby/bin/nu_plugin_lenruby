@@ -5,6 +5,7 @@ require "nu/plugin"
 
 class LenCommand < Nu::Plugin::Command
   name "len-ruby"
+  usage "Gets the length of a value"
 
   def filter input
     input.size

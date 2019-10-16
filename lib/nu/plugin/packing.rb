@@ -43,7 +43,7 @@ module Nu
 
       def default_tag
       	{
-      	  "origin"=>"00000000-0000-0000-0000-000000000000", 
+      	  "anchor"=>nil, 
       	  "span"=>{"start"=>0, "end"=>0}
         }
       end
