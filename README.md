@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/andrasio/nu-plugin.svg?branch=master)](https://travis-ci.org/andrasio/nu-plugin)
+
 # nu_plugin
 
 Write [Nushell](http://nushell.sh) plugins in the most fun way possible.
