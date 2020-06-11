@@ -1,5 +1,5 @@
 module RequestHelpers
-  require "json"
+  require 'json'
 
   def stub_config_request
     io = StringIO.new
@@ -9,10 +9,10 @@ module RequestHelpers
   end
 
   def config_request
-    {jsonrpc:"2.0", method:"config", params:[]}
+    { jsonrpc: '2.0', method: 'config', params: [] }
   end
 
   def begin_filter_request
-    {jsonrpc:"2.0", method:"begin_filter", params: []}
+    { jsonrpc: '2.0', method: 'begin_filter', params: [] }
   end
 end

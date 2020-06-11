@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "nu/plugin"
+require 'bundler/setup'
+require 'nu_plugin'
 
-class SumCommand < Nu::Plugin::Command
-  name "sum-ruby"
-  usage "Sums a column of values"
+# :nodoc:
+class SumCommand < NuPlugin::Command
+  name 'sum-ruby'
+  usage 'Sums a column of values'
 
   # We want to accumulate and not report back to Nu any output while filtering, so
   # we mark the method silent and send nothing back to Nu when filtering happens.
@@ -18,7 +19,7 @@ class SumCommand < Nu::Plugin::Command
     @total = 0
   end
 
-  def filter input
+  def filter(input)
     @total += input
   end
 
@@ -27,4 +28,4 @@ class SumCommand < Nu::Plugin::Command
   end
 end
 
-Nu::Plugin::JsonEntryPoint.run cmd: SumCommand
+NuPlugin::JsonEntryPoint.run cmd: SumCommand

@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "nu/plugin"
+require 'bundler/setup'
+require 'nu_plugin'
 
-class MathFunCommand < Nu::Plugin::Command
-  name "math-fun"
-  usage "Shows a table of values for f(x) = x + 2"
+# :nodoc:
+class MathFunCommand < NuPlugin::Command
+  name 'math-fun'
+  usage 'Shows a table of values for f(x) = x + 2'
 
   # We want to send back a math exercise after the filter finishes.
   after_action :math_table
@@ -16,28 +17,27 @@ class MathFunCommand < Nu::Plugin::Command
     @table = []
   end
 
-  # Since this method exists (and required so nu-plugin registers it as a filter)
-  # nu-plugin assumes it's a filter command.
+  # Since this method exists (and required so nu_plugin registers it as a filter)
+  # nu_plugin assumes it's a filter command.
   #
   # We don't need it for this example so we are leaving it empty.
   #
-  # nu-plugin will send back nothing to Nu while filtering takes place if and only if
+  # nu_plugin will send back nothing to Nu while filtering takes place if and only if
   # this method does not return anything (including implicit returns from assignments
   # or expressions)
-  def filter input
-  end
+  def filter(input); end
 
   def f(x, &formula)
-    {x: x, y: formula.call(x)}
+    { x: x, y: formula.call(x) }
   end
 
   def math_table
     1.upto(MAX) do |x|
-      @table << f(x) {|x| x*2}
+      @table << f(x) { |x| x * 2 }
     end
 
     @table
   end
 end
 
-Nu::Plugin::JsonEntryPoint.run cmd: MathFunCommand
+NuPlugin::JsonEntryPoint.run cmd: MathFunCommand

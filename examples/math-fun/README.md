@@ -10,10 +10,10 @@ Run `bundle`:
 math-fun $ bundle
 ```
 
-`path/to/nu-plugin/examples/math-fun/bin` needs to be in the `PATH` like so:
+`path/to/nu_plugin/examples/math-fun/bin` needs to be in the `PATH` like so:
 
 ```shell
-$ export PATH="path/to/nu-plugin/examples/math-fun/bin:$PATH"
+$ export PATH="path/to/nu_plugin/examples/math-fun/bin:$PATH"
 ```
 
 To be able to run Nu you need the Nu binary in the `PATH` as well (or run it directly `path/to/nu`)
@@ -21,9 +21,9 @@ To be able to run Nu you need the Nu binary in the `PATH` as well (or run it dir
 Confirm it picks up the plugin by using Nu's `help` command:
 
 ```shell
-math-fun $ export PATH="/Users/andrasio/Code/nu-plugin/examples/math-fun/bin:$PATH"
+math-fun $ export PATH="/Users/andrasio/Code/nu_plugin/examples/math-fun/bin:$PATH"
 math-fun $ nu
-/Users/andrasio/Code/nu-plugin/examples/math-fun(master)> help math-fun
+/Users/andrasio/Code/nu_plugin/examples/math-fun(master)> help math-fun
 Shows a table of values for f(x) = x + 2
 
 Usage:
@@ -33,7 +33,7 @@ Usage:
 Now run `math-fun`:
 
 ```shell
-/Users/andrasio/Code/nu-plugin/examples/math-fun(master)> math-fun
+/Users/andrasio/Code/nu_plugin/examples/math-fun(master)> math-fun
 ━━━━┯━━━━┯━━━━
  #  │ x  │ y
 ────┼────┼────

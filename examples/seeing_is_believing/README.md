@@ -10,10 +10,10 @@ Run `bundle`:
 seeing_is_believing $ bundle
 ```
 
-`path/to/nu-plugin/examples/seeing_is_believing/bin` needs to be in the `PATH` like so:
+`path/to/nu_plugin/examples/seeing_is_believing/bin` needs to be in the `PATH` like so:
 
 ```shell
-$ export PATH="path/to/nu-plugin/examples/seeing_is_believing/bin:$PATH"
+$ export PATH="path/to/nu_plugin/examples/seeing_is_believing/bin:$PATH"
 ```
 
 To be able to run Nu you need the Nu binary in the `PATH` as well (or run it directly `path/to/nu`)
@@ -21,9 +21,9 @@ To be able to run Nu you need the Nu binary in the `PATH` as well (or run it dir
 Confirm it picks up the plugin by using Nu's `help` command:
 
 ```shell
-seeing_is_believing $ export PATH="/Users/andrasio/Code/nu-plugin/examples/seeing_is_believing/bin:$PATH"
+seeing_is_believing $ export PATH="/Users/andrasio/Code/nu_plugin/examples/seeing_is_believing/bin:$PATH"
 seeing_is_believing $ nu
-/Users/andrasio/Code/nu-plugin/examples/seeing_is_believing(master)> help sib
+/Users/andrasio/Code/nu_plugin/examples/seeing_is_believing(master)> help sib
 Shows Ruby code snippets with evaluated Ruby code per line in comments
 
 Usage:
@@ -46,7 +46,7 @@ end
 Let's open the file and pass the contents to `sib` like so:
 
 ```shell
-/Users/andrasio/Code/nu-plugin/examples/seeing_is_believing(master)> open bin/arepas.rb | sib
+/Users/andrasio/Code/nu_plugin/examples/seeing_is_believing(master)> open bin/arepas.rb | sib
 # Evaluated Ruby Code:
 los_tres_caballeros = [:robalino, :turner, :katz, :josh]  #[:robalino, :turner, :katz, :josh]
 words = ["le gusta", "C", "likes", "Ok"]                  #["le gusta", "C", "likes", "Ok"]

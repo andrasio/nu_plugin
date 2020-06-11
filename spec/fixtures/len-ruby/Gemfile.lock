@@ -1,0 +1,17 @@
+PATH
+  remote: ../..
+  specs:
+    nu_plugin (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  nu_plugin!
+
+BUNDLED WITH
+   2.0.2

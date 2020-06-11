@@ -1,19 +1,20 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "seeing_is_believing"
-require "nu/plugin"
+require 'bundler/setup'
+require 'seeing_is_believing'
+require 'nu_plugin'
 
-class SeeingIsBelievingCommand < Nu::Plugin::Command
-  name "sib"
-  usage "Shows Ruby code snippets with evaluated Ruby code per line in comments"
+# :nodoc:
+class SeeingIsBelievingCommand < NuPlugin::Command
+  name 'sib'
+  usage 'Shows Ruby code snippets with evaluated Ruby code per line in comments'
 
   def initialize
-    @evaluated = ""
+    @evaluated = ''
   end
 
-  def sink inputs
-    return "" if inputs.empty?
+  def sink(inputs)
+    return '' if inputs.empty?
 
     @evaluated << "# Evaluated Ruby Code:\n"
 
@@ -22,13 +23,14 @@ class SeeingIsBelievingCommand < Nu::Plugin::Command
     longest_line = max_len(ruby_code_lines)
 
     evaluate(ruby_code).each_with_index do |evaluated_code, line_number|
-      @evaluated << "%#{-1*longest_line}s \#%s\n" % [ruby_code_lines[line_number].chomp, evaluated_code[0]]
+      @evaluated << format("%#{-1 * longest_line}s \#%s\n", ruby_code_lines[line_number].chomp, evaluated_code[0])
     end
 
-    print "%s" % @evaluated
+    print format('%s', @evaluated)
   end
 
   private
+
   def max_len(ruby_code_line)
     ruby_code_line.reduce(0) do |max, line|
       size = line.size
@@ -41,4 +43,4 @@ class SeeingIsBelievingCommand < Nu::Plugin::Command
   end
 end
 
-Nu::Plugin::JsonEntryPoint.run cmd: SeeingIsBelievingCommand
+NuPlugin::JsonEntryPoint.run cmd: SeeingIsBelievingCommand

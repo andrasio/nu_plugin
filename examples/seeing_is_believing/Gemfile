@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "nu-plugin", path: "../../../nu-plugin"
-gem "seeing_is_believing"
+gem 'nu_plugin', path: '../../../nu_plugin'
+gem 'seeing_is_believing'
