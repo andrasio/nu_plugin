@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'nu_plugin'
+
+class SwitchArguments < NuPlugin::Command
+  name 'switch-arguments-test'
+  usage 'Tests switch arguments'
+
+  silent :filter
+
+  switch :arg1, desc: "A switch" do
+    short "a"
+
+    present { @active = true }
+  end
+
+  switch :arg2
+
+  def filter(_); end
+
+  def end_filter
+    combine_arguments_passed
+  end
+
+  private
+  def combine_arguments_passed
+    require_relative '../cases.rb'
+    ArgumentTests.assert_instance_variable_wiring!(self, :arg1, :arg2)
+
+    [
+      ["arg1", "=", @arg1],
+      ["active", "=", @active],
+      ["arg2", "=", @arg2]
+    ].map {|assertion| assertion.join}.join("|")
+  end
+end
+
+NuPlugin::JsonEntryPoint.run cmd: SwitchArguments

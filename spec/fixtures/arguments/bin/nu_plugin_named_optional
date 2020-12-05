@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'nu_plugin'
+
+class OptionalNamedArguments < NuPlugin::Command
+  name 'optional-named-arguments-test'
+  usage 'Tests named optional arguments'
+
+  optional :arg1, desc: "An optional named string argument" do
+    type String
+    short "a"
+
+    present do |value|
+      @arg1 = value
+    end
+  end
+
+  optional :arg2, type: String
+
+  def filter(_input); end
+
+  def end_filter
+    combine_arguments_passed
+  end
+
+  private
+  def combine_arguments_passed
+    require_relative '../cases.rb'
+    ArgumentTests.assert_instance_variable_wiring!(self, :arg1, :arg2)
+
+    [
+      ["arg1", "=", @arg1],
+      ["arg2", "=", @arg2]
+    ].map {|assertion| assertion.join}.join("|")
+  end
+
+
+end
+
+NuPlugin::JsonEntryPoint.run cmd: OptionalNamedArguments

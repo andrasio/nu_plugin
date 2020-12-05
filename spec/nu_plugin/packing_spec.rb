@@ -22,7 +22,15 @@ describe NuPlugin::Packing do
   end
 
   def nu_int(integer)
-    Hash['Primitive', { 'Int' => integer }]
+    Hash['Primitive', { 'Int' => integer.to_s }]
+  end
+
+  def nu_decimal(decimal)
+    Hash['Primitive', { 'Decimal' => decimal.to_s }]
+  end
+
+  def nu_string(string)
+    Hash['Primitive', { 'String' => string }]
   end
 
   let(:nu_nothing) {
@@ -37,15 +45,11 @@ describe NuPlugin::Packing do
     Hash['Primitive', { 'Boolean' => 'false' }]
   }
 
-  let(:nu_string) {
-    Hash['Primitive', { 'String' => 'andres' }]
-  }
-
   let(:nu_row) {
     {
       'Row' => {
         'entries' => {
-          'name' => nu_value(nu_string),
+          'name' => nu_value(nu_string('andres')),
           'tarif' => nu_value(nu_int(35))
         }
       }
@@ -56,7 +60,7 @@ describe NuPlugin::Packing do
     {
       'Row' => {
         'entries' => {
-          'name' => nu_tagged_value(nu_string),
+          'name' => nu_tagged_value(nu_string('andres')),
           'tarif' => nu_tagged_value(nu_int(35))
         }
       }
@@ -79,14 +83,29 @@ describe NuPlugin::Packing do
       expect(packer.rubytize(value)).to be_nil
     end
 
+    it 'dates' do
+      value = nu_value(nu_string("2020-11-16T00:00:00.000000000+00:00"))
+      expect(packer.rubytize(value)).to eq('2020-11-16T00:00:00.000000000+00:00')
+    end
+
     it 'integers' do
       value = nu_value(nu_int(35))
       expect(packer.rubytize(value)).to eql(35)
     end
 
+    it 'decimals' do
+      value = nu_value(nu_decimal(3.15))
+      expect(packer.rubytize(value)).to eql(3.15)
+    end
+
     it 'strings' do
-      value = nu_value(nu_string)
+      value = nu_value(nu_string('andres'))
       expect(packer.rubytize(value)).to eql('andres')
+    end
+
+    it 'symbols' do
+      value = nu_value(nu_string(':andres'))
+      expect(packer.rubytize(value)).to eql(:andres)
     end
 
     it 'tables' do
@@ -109,6 +128,11 @@ describe NuPlugin::Packing do
       expect([].nuvalize).to eql(nu_nothing)
     end
 
+    it 'dates' do
+      require 'date'
+      expect(DateTime.new(2020, 11, 16).nuvalize).to eql(nu_string("2020-11-16T00:00:00.000000000+00:00"))
+    end
+
     it 'booleans' do
       expect(true.nuvalize).to eql(nu_true)
       expect(false.nuvalize).to eql(nu_false)
@@ -119,8 +143,18 @@ describe NuPlugin::Packing do
       expect(-1.nuvalize).to eql(nu_int(-1))
     end
 
+    it 'decimals' do
+      decimal = 3.15
+      expect(decimal.nuvalize).to eql(nu_decimal(3.15))
+    end
+
     it 'strings' do
-      expect('andres'.nuvalize).to eql(nu_string)
+      expect('andres'.nuvalize).to eql(nu_string('andres'))
+    end
+
+    it 'symbols' do
+      expect(:andres.nuvalize).to eql(nu_string(':andres'))
+      expect(':andres'.nuvalize).to eql(nu_string(':andres'))
     end
 
     it 'arrays' do
@@ -143,6 +177,11 @@ describe NuPlugin::Packing do
       expect(with_metadata.nuvalize(nil)).to eql(nu_tagged_value(nu_nothing))
     end
 
+    it 'dates' do
+      require 'date'
+      expect(with_metadata.nuvalize(DateTime.new(2020, 11, 16))).to eql(nu_tagged_value(nu_string("2020-11-16T00:00:00.000000000+00:00")))
+    end
+
     it 'boolean objects' do
       expect(with_metadata.nuvalize(true)).to eql(nu_tagged_value(nu_true))
       expect(with_metadata.nuvalize(false)).to eql(nu_tagged_value(nu_false))
@@ -152,9 +191,18 @@ describe NuPlugin::Packing do
       expect(with_metadata.nuvalize(35)).to eql(nu_tagged_value(nu_int(35)))
     end
 
+    it 'decimals' do
+      expect(with_metadata.nuvalize(3.15)).to eql(nu_tagged_value(nu_decimal(3.15)))
+    end
+
     it 'strings' do
-      expected = nu_tagged_value(nu_string)
+      expected = nu_tagged_value(nu_string('andres'))
       expect(with_metadata.nuvalize('andres')).to eql(expected)
+    end
+
+    it 'symbols' do
+      expected = nu_tagged_value(nu_string(':andres'))
+      expect(with_metadata.nuvalize(:andres)).to eql(expected)
     end
 
     it 'tables' do

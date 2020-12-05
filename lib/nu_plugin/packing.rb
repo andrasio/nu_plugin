@@ -16,12 +16,25 @@ module NuPlugin
         nu_table(nu_value.fetch('Table'))
       else
         begin
-        nu_primitive = nu_value.fetch('Primitive')
+          nu_primitive = nu_value.fetch('Primitive')
 
-        return nil if nu_primitive == 'Nothing'
+          return nil if nu_primitive == 'Nothing'
 
-        nu_primitive.values.first
-      end
+          if nu_primitive['String']
+            str = nu_primitive['String']
+
+            return str[1..].to_sym if str.start_with?(':')
+            #return DateTime.iso8601(str)
+          elsif nu_primitive['Int']
+            return nu_primitive['Int'].to_i
+          elsif nu_primitive['Decimal']
+            return nu_primitive['Decimal'].to_f
+          end
+          
+          nu_primitive.values.first
+        rescue Date::Error
+          nu_primitive.values.first
+        end
       end
     end
 

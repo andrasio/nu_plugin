@@ -18,15 +18,35 @@ module NuPlugin
       end
     end
 
+    require 'date'
+
+    refine Date do
+      def nuvalize
+        Hash['Primitive', { 'String' => self.iso8601(9) }]
+      end
+    end
+
     refine String do
       def nuvalize
         Hash['Primitive', { 'String' => self }]
       end
     end
 
+    refine Symbol do
+      def nuvalize
+        Hash['Primitive', { 'String' => ":#{self}" }]
+      end
+    end
+
     refine Integer do
       def nuvalize
-        Hash['Primitive', { 'Int' => self }]
+        Hash['Primitive', { 'Int' => self.to_s }]
+      end
+    end
+
+    refine Float do
+      def nuvalize
+        Hash['Primitive', { 'Decimal' => self.to_s }]
       end
     end
 

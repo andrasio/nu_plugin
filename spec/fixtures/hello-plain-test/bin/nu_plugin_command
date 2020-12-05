@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'nu_plugin'
+
+class HelloCommand < NuPlugin::Command
+  name 'hello-plain-test'
+  usage 'Prints Andrés'
+
+  def sink
+    print 'Andrés'
+  end
+end
+
+NuPlugin.command('hello-plain-test')

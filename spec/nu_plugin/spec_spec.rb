@@ -22,7 +22,7 @@ describe NuPlugin::Spec do
 
   it 'gathers actions before filtering' do
     expect(view).to receive(:before_filter_ready)
-    plugin.begin_filter
+    plugin.begin_filter(double(:call_info).as_null_object)
   end
 
   it 'prepares filtering' do

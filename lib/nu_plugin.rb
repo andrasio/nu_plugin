@@ -5,6 +5,30 @@ require 'nu_plugin/spec'
 module NuPlugin
   class Error < StandardError; end
 
+  class << self
+    def commands
+      @commands ||= []
+    end
+
+    def command(name)
+      begin
+        cmd = @commands.find {|c| c.instance_variable_get('@name')  == name}
+
+        JsonEntryPoint.run cmd: cmd
+       rescue 
+         # ...
+      end
+    end
+
+    def configuration
+      @configuration ||= Class.new
+    end
+
+    def configure
+      yield configuration
+    end
+  end
+
   class JsonEntryPoint
     require 'json'
 
@@ -50,7 +74,12 @@ module NuPlugin
 
       begin
         parse!
-        plugin.send(@input['method'].to_sym)
+
+        if @input['params'] && !['quit', 'filter', 'sink', 'end_filter'].include?(@input['method'])
+          plugin.send(@input['method'].to_sym, @input['params'])
+        else
+          plugin.send(@input['method'].to_sym)
+        end
       end while !@done
     end
 
@@ -64,8 +93,7 @@ module NuPlugin
     end
 
     def sink_ready
-      val = @input['params'][1]
-      plugin.start_sink(val)
+      plugin.start_sink(*@input['params'])
     end
 
     def filter_done
