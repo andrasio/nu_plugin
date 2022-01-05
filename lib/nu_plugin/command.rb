@@ -146,7 +146,7 @@ module NuPlugin
     def configuration
       cmd_name = self.class.instance_variable_get('@name')
 
-      {
+      info = {
         name: cmd_name,
         named: (self.class.instance_variable_get('@flags') || []).reduce({}) {|flags, f| flags.merge(f)},
         usage: self.class.instance_variable_get('@usage') || cmd_name,
@@ -156,6 +156,12 @@ module NuPlugin
         input: nil, 
         is_filter: filter?
       }
+
+      if (ENV["NU_VERSION"] == "0.33.1" || ENV["NU_VERSION"] == "0.37.1")
+        info.merge(extra_usage: "")
+      else
+        info
+      end
     end
 
     private

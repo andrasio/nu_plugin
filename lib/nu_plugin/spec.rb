@@ -106,6 +106,7 @@ module NuPlugin
 
     def start_filter(input)
       klass = @binary.class
+      NuPlugin.log("filtering input #{input}")
       output = @binary.filter(@packer.rubytize(input))
 
       @output = begin

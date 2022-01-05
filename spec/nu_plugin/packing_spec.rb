@@ -22,11 +22,13 @@ describe NuPlugin::Packing do
   end
 
   def nu_int(integer)
-    Hash['Primitive', { 'Int' => integer.to_s }]
+    val = (!["latest", "0.33.1", "0.37.1", "legacy"].include?(ENV["NU_VERSION"]))  ? { 'Int' => integer.to_s } : { 'Int' => integer }
+    Hash['Primitive', val]
   end
 
   def nu_decimal(decimal)
-    Hash['Primitive', { 'Decimal' => decimal.to_s }]
+    val = (["latest", "0.33.1", "0.37.1"].include?(ENV["NU_VERSION"]))  ? { 'Decimal' => decimal.to_s } : { 'Decimal' => decimal }
+    Hash['Primitive', val]
   end
 
   def nu_string(string)
@@ -38,11 +40,13 @@ describe NuPlugin::Packing do
   }
 
   let(:nu_true) {
-    Hash['Primitive', { 'Boolean' => 'true' }]
+    val = (["latest", "0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'true' } : { 'Boolean' => true }
+    Hash['Primitive', val]
   }
 
   let(:nu_false) {
-    Hash['Primitive', { 'Boolean' => 'false' }]
+    val = (["latest", "0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'false' } : { 'Boolean' => false }
+    Hash['Primitive', val]
   }
 
   let(:nu_row) {

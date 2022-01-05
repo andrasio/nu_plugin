@@ -6,6 +6,12 @@ module NuPlugin
   class Error < StandardError; end
 
   class << self
+    def log(data)
+      #File.open('/Users/andrasMAMA/Desktop/nuplugin.log', 'a+') do |fd|
+      #  fd.puts(data)
+      #end
+    end
+
     def commands
       @commands ||= []
     end
@@ -84,11 +90,13 @@ module NuPlugin
     end
 
     def configuration_ready
+      NuPlugin.log("Configuration ready.")
       r = { Ok: plugin.data }
       respond(r)
     end
 
     def filter_ready
+      NuPlugin.log("filter start.")
       plugin.start_filter(@input['params'])
     end
 
@@ -97,18 +105,22 @@ module NuPlugin
     end
 
     def filter_done
+      NuPlugin.log("filter done.")
       respond(@plugin.data)
     end
 
     def sink_done
+      NuPlugin.log("sink done.")
       @done = true
     end
 
     def before_filter_ready
+      NuPlugin.log("before filtering.")
       respond(@plugin.data)
     end
 
     def end_filter_ready
+      NuPlugin.log("after filtering.")
       respond(@plugin.data)
     end
 
@@ -117,6 +129,11 @@ module NuPlugin
     end
 
     def respond(data)
+      NuPlugin.log("writing out #{JSON.generate({
+        jsonrpc: '2.0',
+        method: 'response',
+        params: data
+      })}.")
       write.puts JSON.generate({
                                  jsonrpc: '2.0',
                                  method: 'response',

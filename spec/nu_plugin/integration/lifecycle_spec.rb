@@ -49,13 +49,13 @@ describe 'Nu plugin lifecycle hooks' do
       actual = binary.run!
       expect(actual).to eql('arg1=value|arg2=')
 
-      binary.command = ArgumentTests.named(arg1: "\"another value\"")
+      binary.command = ArgumentTests.named(arg1: "another_value")
       actual = binary.run!
-      expect(actual).to eql("arg1=another value|arg2=")
+      expect(actual).to eql("arg1=another_value|arg2=")
 
-      binary.command = ArgumentTests.named(arg1: "value", arg2: "\"another value\"")
+      binary.command = ArgumentTests.named(arg1: "value", arg2: "another_value")
       actual = binary.run!
-      expect(actual).to eql("arg1=value|arg2=another value")
+      expect(actual).to eql("arg1=value|arg2=another_value")
     end
 
     it 'registers switch flags' do

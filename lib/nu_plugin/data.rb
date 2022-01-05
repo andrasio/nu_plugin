@@ -8,13 +8,15 @@ module NuPlugin
 
     refine TrueClass do
       def nuvalize
-        Hash['Primitive', { 'Boolean' => 'true' }]
+        val = (["latest", "0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'true' } : { 'Boolean' => true }
+        Hash['Primitive', val]
       end
     end
 
     refine FalseClass do
       def nuvalize
-        Hash['Primitive', { 'Boolean' => 'false' }]
+        val = (["latest", "0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'false' } : { 'Boolean' => false }
+        Hash['Primitive', val]
       end
     end
 
@@ -40,13 +42,15 @@ module NuPlugin
 
     refine Integer do
       def nuvalize
-        Hash['Primitive', { 'Int' => self.to_s }]
+        val = (!["latest", "0.33.1", "0.37.1", "legacy"].include?(ENV["NU_VERSION"]))  ? { 'Int' => self.to_s } : { 'Int' => self }
+        Hash['Primitive', val]
       end
     end
 
     refine Float do
       def nuvalize
-        Hash['Primitive', { 'Decimal' => self.to_s }]
+        val = (["latest", "0.33.1", "0.37.1"].include?(ENV["NU_VERSION"]))  ? { 'Decimal' => self.to_s } : { 'Decimal' => self }
+        Hash['Primitive', val]
       end
     end
 
