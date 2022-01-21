@@ -157,7 +157,7 @@ module NuPlugin
         is_filter: filter?
       }
 
-      if (ENV["NU_VERSION"] == "0.33.1" || ENV["NU_VERSION"] == "0.37.1")
+      if (ENV["NU_VERSION"] == "0.33.1" || ENV["NU_VERSION"] == "0.37.1" || ENV["NU_VERSION"] == "latest")
         info.merge(extra_usage: "")
       else
         info
