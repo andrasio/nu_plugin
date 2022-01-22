@@ -8,14 +8,14 @@ module NuPlugin
 
     refine TrueClass do
       def nuvalize
-        val = (["latest", "0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'true' } : { 'Boolean' => true }
+        val = (["0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'true' } : { 'Boolean' => true }
         Hash['Primitive', val]
       end
     end
 
     refine FalseClass do
       def nuvalize
-        val = (["latest", "0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'false' } : { 'Boolean' => false }
+        val = (["0.33.1"].include?(ENV["NU_VERSION"]))  ? { 'Boolean' => 'false' } : { 'Boolean' => false }
         Hash['Primitive', val]
       end
     end
